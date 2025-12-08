@@ -1,56 +1,67 @@
-#include <iostream>
-#include <vector>
-#include <string>
+#include <bits/stdc++.h>
 using namespace std;
+
+// Elimina iterativamente los símbolos '@' que tengan menos de 4 vecinos '@'.
+// Se cuentan cuántos símbolos se eliminan en total.
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    vector<string> grid;
-    string line;
-    while (getline(cin, line)) {
-        if (!line.empty() && line.back() == '\r') line.pop_back();
-        if (!line.empty()) grid.push_back(line);
+    // Rejilla de entrada
+    vector<string> rejilla;
+    string linea;
+
+    // Leer todas las líneas de la entrada
+    while (getline(cin, linea)) {
+        if (!linea.empty() && linea.back() == '\r') linea.pop_back(); // limpiar CR si existe
+        if (!linea.empty()) rejilla.push_back(linea);
     }
 
-    int H = (int)grid.size();
-    int W = H ? (int)grid[0].size() : 0;
+    int filas = (int)rejilla.size();
+    int columnas = filas ? (int)rejilla[0].size() : 0;
 
-    int dr[8] = {-1,-1,-1,0,0,1,1,1};
+    // Desplazamientos en las 8 direcciones
+    int df[8] = {-1,-1,-1,0,0,1,1,1};
     int dc[8] = {-1,0,1,-1,1,-1,0,1};
 
-    long long total_removed = 0;
+    long long totalEliminados = 0;
 
     while (true) {
-        vector<pair<int,int> > to_remove;
-        for (int r = 0; r < H; r++) {
-            for (int c = 0; c < W; c++) {
-                if (grid[r][c] != '@') continue;
-                int adj = 0;
+        vector<pair<int,int>> aEliminar;
+
+        // Buscar todos los '@' con menos de 4 vecinos
+        for (int f = 0; f < filas; f++) {
+            for (int c = 0; c < columnas; c++) {
+                if (rejilla[f][c] != '@') continue;
+
+                int vecinos = 0;
                 for (int k = 0; k < 8; k++) {
-                    int nr = r + dr[k];
+                    int nf = f + df[k];
                     int nc = c + dc[k];
-                    if (nr >= 0 && nr < H && nc >= 0 && nc < W && grid[nr][nc] == '@') {
-                        adj++;
+                    if (nf >= 0 && nf < filas && nc >= 0 && nc < columnas && rejilla[nf][nc] == '@') {
+                        vecinos++;
                     }
                 }
-                if (adj < 4) {
-                    to_remove.push_back(make_pair(r, c));
+
+                if (vecinos < 4) {
+                    aEliminar.push_back({f, c});
                 }
             }
         }
-        if (to_remove.empty()) break;
 
-        for (size_t i = 0; i < to_remove.size(); i++) {
-            int r = to_remove[i].first;
-            int c = to_remove[i].second;
-            grid[r][c] = '.'; // importante: punto y coma
+        // Si no hay más para eliminar, terminamos
+        if (aEliminar.empty()) break;
+
+        // Eliminar los seleccionados
+        for (auto [f, c] : aEliminar) {
+            rejilla[f][c] = '.'; // sustituir por punto
         }
-        total_removed += (long long)to_remove.size();
+
+        totalEliminados += (long long)aEliminar.size();
     }
 
-    cout << total_removed << "\n";
+    cout << totalEliminados << "\n";
     return 0;
 }
 
