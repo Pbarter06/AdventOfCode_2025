@@ -15,7 +15,7 @@ void explore(int r, int c) {
     // Caso base
     if (r >= R || c < 0 || c >= C || dp[r][c]) return;
 
-
+    //La marcamos como visitada para evitar el sobreconteo de caminos 
     dp[r][c] = true;
     
     if (grid[r][c] == '^') {
