@@ -1,47 +1,59 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    vector<pair<long long,long long>> ranges;
-    string line;
+    // Rangos de frescura [inicio, fin]
+    vector<pair<long long, long long>> rangos;
+    string linea;
 
-    // Leer solo hasta la línea en blanco (los rangos)
-    while (getline(cin, line)) {
-        if (line.empty()) break;
-        size_t dash = line.find('-');
-        if (dash != string::npos) {
-            long long start = stoll(line.substr(0, dash));
-            long long end   = stoll(line.substr(dash+1));
-            ranges.push_back({start, end});
+    // Leer solo la primera sección (rangos) hasta línea en blanco
+    while (getline(cin, linea)) {
+        if (!linea.empty() && linea.back() == '\r') linea.pop_back(); // limpiar CR si existe
+        if (linea.empty()) break;
+
+        size_t guion = linea.find('-');
+        if (guion != string::npos) {
+            long long inicio = stoll(linea.substr(0, guion));
+            long long fin    = stoll(linea.substr(guion + 1));
+            rangos.push_back({inicio, fin});
         } else {
-            long long val = stoll(line);
-            ranges.push_back({val, val});
+            long long val = stoll(linea);
+            rangos.push_back({val, val});
         }
     }
 
-    // Ordenar por inicio
-    sort(ranges.begin(), ranges.end());
+    if (rangos.empty()) {
+        cout << "Número total de IDs frescos: 0\n";
+        return 0;
+    }
 
-    // Unir rangos solapados
-    vector<pair<long long,long long>> merged;
-    for (auto &r : ranges) {
-        if (merged.empty() || r.first > merged.back().second + 1) {
-            merged.push_back(r);
+    // Ordenar por inicio (y por fin para estabilidad)
+    sort(rangos.begin(), rangos.end(), [](const auto& a, const auto& b) {
+        if (a.first != b.first) return a.first < b.first;
+        return a.second < b.second;
+    });
+
+    // Unir rangos solapados o adyacentes
+    vector<pair<long long, long long>> unidos;
+    for (const auto& r : rangos) {
+        if (unidos.empty() || r.first > unidos.back().second + 1) {
+            unidos.push_back(r);
         } else {
-            merged.back().second = max(merged.back().second, r.second);
+            unidos.back().second = max(unidos.back().second, r.second);
         }
     }
 
-    // Contar IDs distintos
-    long long totalFresh = 0;
-    for (auto &r : merged) {
-        totalFresh += (r.second - r.first + 1);
+    // Contar IDs distintos en los rangos unidos
+    long long totalFrescos = 0;
+    for (const auto& r : unidos) {
+        totalFrescos += (r.second - r.first + 1);
     }
 
-    cout << "Número total de IDs frescos: " << totalFresh << "\n";
+    cout << "Número total de IDs frescos: " << totalFrescos << "\n";
     return 0;
 }
 
