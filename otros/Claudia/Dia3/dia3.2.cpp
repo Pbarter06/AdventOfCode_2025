@@ -1,53 +1,60 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
-// Función para obtener el máximo número de longitud k como subsecuencia
-string maxSubsequence(const string &line, int k) {
-    vector<char> stack;
-    int toRemove = line.size() - k; // cuántos dígitos podemos descartar
+// Función que obtiene la subsecuencia máxima de longitud k
+string subsecuenciaMaxima(const string &linea, int k) {
+    vector<char> pila;
+    int porEliminar = (int)linea.size() - k; // cuántos dígitos podemos descartar
 
-    for (char c : line) {
-        while (!stack.empty() && toRemove > 0 && stack.back() < c) {
-            stack.pop_back();
-            toRemove--;
+    // Recorremos cada dígito de la línea
+    for (char c : linea) {
+        // Mientras podamos eliminar y el último dígito sea menor que el actual, lo quitamos
+        while (!pila.empty() && porEliminar > 0 && pila.back() < c) {
+            pila.pop_back();
+            porEliminar--;
         }
-        stack.push_back(c);
+        // Añadimos el dígito actual a la pila
+        pila.push_back(c);
     }
 
-    // Si aún quedan por quitar, recorta al final
-    while (toRemove > 0) {
-        stack.pop_back();
-        toRemove--;
+    // Si aún quedan por eliminar, recortamos al final
+    while (porEliminar > 0) {
+        pila.pop_back();
+        porEliminar--;
     }
 
-    // Construir resultado con los primeros k dígitos
-    return string(stack.begin(), stack.begin() + k);
+    // Construimos el resultado con los primeros k dígitos
+    return string(pila.begin(), pila.begin() + k);
 }
 
 int main() {
-    ifstream file("dia3.txt");
-    if (!file) {
-        cerr << "No se pudo abrir el archivo dia3.txt" << endl;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    ifstream archivo("dia3.txt");
+    if (!archivo) {
+        cerr << "No se pudo abrir el archivo dia3.txt\n";
         return 1;
     }
 
-    string line;
+    string linea;
     long long total = 0;
 
-    while (getline(file, line)) {
-        if (line.empty()) continue;
+    // Leer cada línea del archivo
+    while (getline(archivo, linea)) {
+        if (linea.empty()) continue;
 
-        string best = maxSubsequence(line, 12);
+        // Obtenemos la mejor subsecuencia de 12 dígitos
+        string mejor = subsecuenciaMaxima(linea, 12);
 
-        // Convertir a número grande (usa stoll si cabe en long long)
-        long long val = stoll(best);
-        total += val;
+        // Convertimos la subsecuencia en número
+        long long valor = stoll(mejor);
+
+        // Sumamos al total
+        total += valor;
     }
 
-    cout << "Total output joltage (12 digits): " << total << endl;
+    cout << "Voltaje total de salida (12 dígitos): " << total << "\n";
     return 0;
 }
 
