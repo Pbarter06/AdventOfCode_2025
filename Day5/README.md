@@ -1,5 +1,5 @@
 
-# Advent of Code 2025 Day 8
+# Advent of Code 2025 Day 5
 
 **Equipo AB y Z**
 
