@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//estructura para manejar conjuntos distintos
 struct DSU {
     //padre-> para cada nodo i (alamacena su representante)
     //tam-> tamaño del componente 
@@ -42,9 +41,7 @@ struct DSU {
 
 
 int main(){
-    //abrir el fichero
     ifstream archivo("input.txt");
-    //comprobar que se ha abierto correctamente
     if(!archivo.is_open()){
         cout << "Error al abrir el fichero." << endl;
         return 1;
@@ -97,7 +94,7 @@ int main(){
     //contar tamaños de cada componente
     unordered_map<int, long long> tamComp;
 
-    for(int i = 0; i < n; i++){ //recorrer todas las cajas
+    for(int i = 0; i < n; i++){ 
         int r = dsu.find(i);
         tamComp[r]++;
     }
@@ -120,3 +117,4 @@ int main(){
 
     return 0;
 }
+
