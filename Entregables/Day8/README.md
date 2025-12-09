@@ -11,7 +11,7 @@
 ## ¿Por qué se ha elegido este problema?
 Este problema ha sido elegido porque combina la estructura de agrupación con la ordenación de cajas. 
 
-## ¿Qué técnica o etsructura de datos (o las dos) se emplean?
+## ¿Qué técnica o estructura de datos (o las dos) se emplean?
 La estructura principal que se ha implementado en el código de este día es DSU (Disjoint Set Union). Esta estructura permite que en el problema se agrupen elementos en componentes que estén conectados entre sí. De esta manera, permite que se eviten ciclos a la hora de ejecutar el código. Asimismo, se utiliza un vector para almacenar dichas distancias entre los pares de cajas para más tarde ordenarse entre los pares más cercanos.
 
 ## ¿Cómo se ha abordado la resolución del problema?
