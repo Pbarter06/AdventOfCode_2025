@@ -20,6 +20,7 @@ La solución planteada utiliza la estructura de Árbol Binario de Búsqueda (BST
 La función insert construye el árbol siguiendo la regla estándar del BST: si el valor start del nuevo rango es menor que el valor del nodo actual, se inserta a la izquierda; si es mayor, se inserta a la derecha. La lógica crítica está en la función searchID, cuyo propósito es determinar si un id está contenido en cualquier rango del árbol. Si un ID no cae en el rango del nodo actual, el algoritmo debe tomar decisiones para el recorrido: si el id es menor que el start del nodo, solo necesita buscar en la rama izquierda. Sin embargo, si el id es mayor o igual al start del nodo, la búsqueda debe propagarse a la rama derecha (por si hay rangos que comienzan más tarde) y también a la rama izquierda (porque los rangos de la izquierda podrían tener un end que todavía cubre el id actual).
 
 ### Alternativas que se han probado y descartado o que se podrían plantear para mejorar la resolución
-Hemos implementado también una segunda versión más sencilla a nivel de código que también es funcional. Esta versión no utiliza estructura de árbol por lo que ...
+Hemos implementado también una segunda versión más sencilla a nivel de código que también es funcional. Esta versión no utiliza estructura de árbol por lo que no es tan eficiente. 
 
 ### Valoración personal sobre qué se ha aprendido y porqué ha sido significativo
+Hemos aprendido la estructura correcta de los árboles y cómo implementarlos para mejorar la eficiencia y el orden del código.
