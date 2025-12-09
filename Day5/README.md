@@ -1,4 +1,14 @@
 
+# Advent of Code 2025 Day 8
+
+**Equipo AB y Z**
+
+## Participantes
+- Finn Alai Perea Oltmann  
+- Paula Barona Terol  
+- Ainhoa López Gómez  
+- Claudia Moreno Martínez
+
 ### Justificación de la elección del Problema 
 
 ### Técnicas o estructuras de datos empleadas
