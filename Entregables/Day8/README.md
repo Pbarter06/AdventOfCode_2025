@@ -16,9 +16,9 @@ La estructura principal que se ha implementado en el código de este día es DSU
 
 ## ¿Cómo se ha abordado la resolución del problema?
 En primer lugar, se leen las coordenadas de las cajas desde el fichero obtenido por la página web de Advent of Code ('input.txt').
-A continuación, se generan todos los pares posibles de las cajas y se calcula la distancia. Para así, más tarde ordenar los pares por distancias de menos a mayor (crecientes).
-De igual manera, se utiliza la etsructura DSU para unir los 1000 pares más cercanos como indica el problema, formando así componentes nuevos.
-Luego, se cuenta el tamaño de cada componente y se seleccionan los tres más grande. Y finalmente, se calcula el producto de esos tres tamaños como resultado final y se imprime por pantalla.
+A continuación, se generan todos los pares posibles de las cajas y se calcula la distancia. Para así, más tarde ordenar los pares por distancias de menor a mayor (crecientes).
+De igual manera, se utiliza la estructura DSU para unir los 1000 pares más cercanos como indica el problema, formando así componentes nuevos.
+Luego, se cuenta el tamaño de cada componente y se seleccionan los tres más grandes. Finalmente, se calcula el producto de esos tres tamaños como resultado final y se imprime por pantalla.
 
 ## ¿Qué alternativas se han probado o descartado?
 Incialmente se planteó recorrer todos los pares de forma bruta. Luego, se consideró recorrer también todos los pares y unirlos si la distancia era menor que una variable fija que implementaríiamos nosotros manualmente. Sin embargo, eso no garantizaba que se seleccionaran los pares correctos por lo que el margen de error aumentaba a un porcentaje muy alto.
