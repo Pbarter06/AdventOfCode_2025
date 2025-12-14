@@ -76,9 +76,6 @@ long long contarCaminos(TablaHash &TH, const string &nodo,
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
     // Creamos la tabla hash con tamaño fijo (101 es primo, ayuda a repartir mejor)
     TablaHash TH(101);
 
