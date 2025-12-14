@@ -1,14 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//estructura para manjear conjuntos diferentes
 struct DSU{
-    //padre-> para cada nodo i (alamacena su representante)
-    //tam-> tamaño del componente 
      vector<int> padre, tam;
     int componentes; // cuántos conjuntos quedan
 
-    //método constructor-> inicializar estructura para n elementos
+    //método constructor
     DSU(int n){
         padre.resize(n);    //padre tiene n posiciones
         //tamaño mínimo 1
@@ -26,7 +23,7 @@ struct DSU{
 
     //función que intenta unir los conjuntos qu eocntienen a y b
     bool unir(int a, int b){
-        //buscar sus raices -> función find()
+        //buscar sus raices 
         a = find(a);
         b = find(b);
 
@@ -36,7 +33,6 @@ struct DSU{
         padre[b] = a;   //la raíz a es padre de b
         //actualizar tamaño
         tam[a] += tam[b];
-        //actualizar componentes-> se han unido 2 y ahora es 1
         componentes--;
         return true; // hemos unido dos componentes diferentes
     }
@@ -44,9 +40,7 @@ struct DSU{
 };
 
 int main(){
-    //abrir archivo
     ifstream archivo("input.txt");
-    //comprobar que se ha abierto correctamente
     if(!archivo.is_open()){
         cout<<"Error al abrir el fichero. Inténtelo más tarde.\n"<<endl;
         return 1;
@@ -111,3 +105,4 @@ int main(){
     cout << resultado << endl;
     return 0;
 }
+
