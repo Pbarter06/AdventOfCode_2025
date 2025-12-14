@@ -14,6 +14,7 @@ struct Nodo {
 
 // Clase de tabla hash
 class TablaHash {
+private:
     // es un vector fijo
     vector<Nodo*> tabla;
     // para el tamaño de la tabla
@@ -98,7 +99,7 @@ int main() {
     // se crea la tabla hash con tamaño fijo (como 101 es primo ayuda a repartir mejor)
     TablaHash TH(101);
 
- // estructuras para guardar resultados y evitar bucles
+    // estructuras para guardar resultados y evitar bucles
     unordered_map<string,long long> memo;
     unordered_set<string> enProceso;
     
