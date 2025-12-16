@@ -8,7 +8,7 @@
 - Claudia Moreno Martínez  
 
 ### **¿Por qué se ha elegido este problema?**
-*(aqui va mi respuesta)*
+*Se ha elegido este problema ya que, leyendo el enunciado era el más propenso a poder implementar casi todos los métodos. En este caso, lo hemos resuelto mediante diferentes técnicas que se explicarán a continuación*
 
 ### **¿Qué técnica o estructura de datos (o las dos) se emplean?**
 *(aqui va mi respuesta)*
