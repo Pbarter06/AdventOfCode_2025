@@ -15,6 +15,14 @@ Este problema ha sido elegido porque combina la estructura de agrupación con la
 La estructura principal que se ha implementado en el código de este día es DSU (Disjoint Set Union). Esta estructura permite que en el problema se agrupen elementos en componentes que estén conectados entre sí. De esta manera, permite que se eviten ciclos a la hora de ejecutar el código. Asimismo, se utiliza un vector para almacenar dichas distancias entre los pares de cajas para más tarde ordenarse entre los pares más cercanos.
 
 ## ¿Cómo se ha abordado la resolución del problema?
+Este código aborda un problema de agrupamiento de puntos a través de la identificación de componentes conectados que están próximos. 
+El prolema busca identificar un conjunto de elementos que están relacionados entre sí mediante un criterio de proxmidad. En este caso, el criterio de prooximidad es el siguiente; la distancia entre dos cajas conectadas mediante una hilera de luces debe ser la más cercana para que la electricidad pueda circular por ellas.
+
+El núcleo de la solución propuesta se basa en una estructura de datos conocida como DSU (Disjoint Set Union) o también conocida como Union-Find. Esta estructura de datos permite gestionar de manera eficiente conjuntos disjuntos de elementos y permite realizar operaciones de unión y de búsqueda, en este caso de cajas, de una manera óptima.
+La estructura utilizada mantiene dos componentes principales. En primer lugar,  DSU trabaja con el vector `padre`que 
+
+
+-----------------------------------------------------------------------------------------------------------
 En primer lugar, se leen las coordenadas de las cajas desde el fichero obtenido por la página web de Advent of Code ('input.txt').
 A continuación, se generan todos los pares posibles de las cajas y se calcula la distancia. Para así, más tarde ordenar los pares por distancias de menor a mayor (crecientes).
 De igual manera, se utiliza la estructura DSU para unir los 1000 pares más cercanos, siempre que pertenezcana  componentes diferentes, como indica el problema, formando así componentes nuevos.
