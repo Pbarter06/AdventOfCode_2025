@@ -19,7 +19,7 @@ A primera vista, se puede observar la implementación de 2 estructuras de datos 
   - Clase Grafo
     
 En cuanto a la clase Nodo, ésta representa cada dispositivo como un nodo del grafo. Mientras que en la clase Grafo contiene todos los nodos y, por ende, permite construir el grafo a partir del input obtenido por el problema del Advent Of Code.
-Asimismo, otra de las técnicas utilizadas ha sido la recursividad. Dicha técnica cumple con un papel fundamental, ya que explora cada rama completa hasta llegar al final o, la otra opción posible, es que explore hasta que no tenga más ramas por las que avanzar. Tambi.en se emplea la recursión a la hora de explorar un nodno hijo, es en ese caso cuando se emplea camino.pop_back() para eliminar el nodo de la ruta actual y poder explorar otras alternativas desde el nodo padre (o raíz).
+Asimismo, otra de las técnicas utilizadas ha sido la recursividad. Dicha técnica cumple con un papel fundamental, ya que explora cada rama completa hasta llegar al final o, la otra opción posible, es que explore hasta que no tenga más ramas por las que avanzar. Tambi.en se emplea la recursión a la hora de explorar un nodno hijo, es en ese caso cuando se emplea `camino.pop_back()` para eliminar el nodo de la ruta actual y poder explorar otras alternativas desde el nodo padre (o raíz).
 
 ## ¿Cómo se ha abordado la resolución del problema?
 El código presenta una solución al problema de encontrar todos los caminos posibles entre dos nodos en un grafo dirigido. Se trata de un problema que dado un grafo con conexiones direccionales entre nodos, se busca enumerar todas las rutas que conectan un punto de inicio con un punto de destino.
