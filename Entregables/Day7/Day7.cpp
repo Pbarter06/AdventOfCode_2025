@@ -4,33 +4,36 @@
 
 using namespace std;
 
-vector<string> grid;
-vector<vector<bool>> dp;
-int R, C;
-long long splits = 0;
+vector<string> grid;          // Matriz que almacena el mapa
+vector<vector<bool>> dp;      // Tabla para marcar celdas visitadas
+int R, C;                     // Dimensiones del grid (filas, columnas)
+long long splits = 0;         // Contador de divisiones ('^')
 
 
-//PD
+// Función recursiva con PD (memoización) para explorar el grid
 void explore(int r, int c) {
-    // Caso base
+    // Caso base: fuera de límites o celda ya visitada
     if (r >= R || c < 0 || c >= C || dp[r][c]) return;
 
-    //La marcamos como visitada para evitar el sobreconteo de caminos 
+    // Marcamos como visitada para evitar sobreconteo de caminos 
     dp[r][c] = true;
     
     if (grid[r][c] == '^') {
+        // División: contamos y exploramos ambas ramas (izq y der)
         splits++;
         explore(r + 1, c - 1);
         explore(r + 1, c + 1);
     } else {
+        // Paso normal: seguimos hacia abajo
         explore(r + 1, c);
     }
 }
 
 int main() {
     string line;
-    int startR = 0, startC = 0;
+    int startR = 0, startC = 0;  // Posición inicial (donde está 'S')
 
+    // Leer el grid y buscar la posición de inicio 'S'
     while (getline(cin, line)) {
         int pos = line.find('S'); 
         
@@ -44,10 +47,13 @@ int main() {
     R = grid.size();
     C = grid[0].size();
     
+    // Inicializar tabla de visitados en false
     dp.assign(R, vector<bool>(C, false));
 
+    // Explorar desde la posición inicial
     explore(startR, startC);
 
+    // Imprimir total de divisiones encontradas
     cout << splits << endl;
     return 0;
 }
