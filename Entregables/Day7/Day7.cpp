@@ -5,28 +5,31 @@
 using namespace std;
 
 vector<string> grid;          // Matriz que almacena el mapa
-vector<vector<bool>> dp;      // Tabla para marcar celdas visitadas
+vector<vector<bool>> dp;      // Tabla para marcar celdas visitadas (memoización)
 int R, C;                     // Dimensiones del grid (filas, columnas)
 long long splits = 0;         // Contador de divisiones ('^')
 
 
-// Función recursiva con PD (memoización) para explorar el grid
+// DFS recursivo con memoización (PD) para explorar el grid
+// Exploramos en profundidad antes de retroceder
 void explore(int r, int c) {
     // Caso base: fuera de límites o celda ya visitada
     if (r >= R || c < 0 || c >= C || dp[r][c]) return;
 
-    // Marcamos como visitada para evitar sobreconteo de caminos 
+    // Marcamos como visitada para evitar sobreconteo de caminos (memoización)
     dp[r][c] = true;
     
     if (grid[r][c] == '^') {
         // División: contamos y exploramos ambas ramas (izq y der)
         splits++;
-        explore(r + 1, c - 1);
-        explore(r + 1, c + 1);
+        // Llamadas recursivas exploran cada rama hasta el fondo
+        explore(r + 1, c - 1);  // Rama izquierda
+        explore(r + 1, c + 1);  // Rama derecha
     } else {
-        // Paso normal: seguimos hacia abajo
+        // Seguimos profundizando en el camino actual
         explore(r + 1, c);
     }
+    // Al terminar las llamadas recursivas, "retrocede" automáticamente
 }
 
 int main() {
@@ -50,7 +53,7 @@ int main() {
     // Inicializar tabla de visitados en false
     dp.assign(R, vector<bool>(C, false));
 
-    // Explorar desde la posición inicial
+    // Iniciar DFS desde la posición inicial
     explore(startR, startC);
 
     // Imprimir total de divisiones encontradas
