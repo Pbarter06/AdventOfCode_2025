@@ -10,17 +10,76 @@
 - Claudia Moreno Martínez
 
 ### Justificación de la elección del Problema 
-Hemos elegido este problema porque se trata de la búsqueda de un dato dentro de intervalos que además hay que modificar. Por esto, hemos deducido que un Binary Search sería una buena forma de plantear la solución. 
+Hemos elegido este problema porque presenta características ideales para aplicar estructuras de datos eficientes:
+
+- **Búsqueda en rangos**: Dado un conjunto de rangos de IDs frescos y una lista de IDs a verificar, necesitamos determinar rápidamente si cada ID pertenece a algún rango. Esto hace que un BST sea una elección natural.
+- **Rangos solapados**: Los rangos pueden superponerse (ej: 10-14 y 12-18), lo que requiere una estrategia de búsqueda que explore múltiples ramas del árbol.
+- **Eficiencia**: Con miles de rangos y miles de IDs a verificar, una búsqueda lineal sería O(n×m). El BST reduce esto a O(m×log n) en promedio.
 
 ### Técnicas o estructuras de datos empleadas
-Se han empleado las tecnicas propias de Búsqueda Binaria y estructura de Árbol para conseguir una estrategia BST (Binary Search Tree). 
+
+**Solución principal (`Day5.cpp`) - BST:**
+- **Árbol Binario de Búsqueda (BST)**: Estructura de datos donde cada nodo contiene un rango `[start, end]`. Los nodos se ordenan por `start`, permitiendo búsquedas eficientes.
+- **Búsqueda recursiva**: La función `searchID()` recorre el árbol buscando si un ID cae dentro de algún rango, explorando ambas ramas cuando es necesario por los rangos solapados.
+
+**Solución alternativa (`Day5.vs2.cpp`) - Merge + Búsqueda Binaria:**
+- **Merge de intervalos**: Fusiona rangos solapados en rangos disjuntos, simplificando la búsqueda posterior.
+- **Búsqueda binaria**: Sobre los rangos fusionados, permite encontrar en O(log n) si un ID pertenece a algún rango.
 
 ### Cómo se ha abordado la resolución del problema
-La solución planteada utiliza la estructura de Árbol Binario de Búsqueda (BST) como un método para acelerar la verificación de si un identificador disponible se encuentra dentro de un rango de IDs frescos. La solución se centra en la eficiencia de la búsqueda. El código implementa una clase RangeBST que trata cada rango (start, end) como un nodo, ordenándolos estrictamente por el valor de start.
-La función insert construye el árbol siguiendo la regla estándar del BST: si el valor start del nuevo rango es menor que el valor del nodo actual, se inserta a la izquierda; si es mayor, se inserta a la derecha. La lógica crítica está en la función searchID, cuyo propósito es determinar si un id está contenido en cualquier rango del árbol. Si un ID no cae en el rango del nodo actual, el algoritmo debe tomar decisiones para el recorrido: si el id es menor que el start del nodo, solo necesita buscar en la rama izquierda. Sin embargo, si el id es mayor o igual al start del nodo, la búsqueda debe propagarse a la rama derecha (por si hay rangos que comienzan más tarde) y también a la rama izquierda (porque los rangos de la izquierda podrían tener un end que todavía cubre el id actual).
+
+**Estructuras de datos principales (`Day5.cpp`):**
+- `range`: Estructura con `start` y `end` que representa un intervalo de IDs frescos.
+- `BSTNode`: Nodo del árbol con un rango y punteros a hijos izquierdo y derecho.
+- `RangeBST`: Clase que encapsula el árbol con métodos de inserción y búsqueda.
+
+**Clase `RangeBST` - Implementación del BST:**
+
+1. **`insert(node, r)`**: Inserta un rango en el árbol recursivamente.
+   - Si el nodo es `nullptr`, crea un nuevo nodo con el rango.
+   - Si `r.start < node->data.start`, inserta en el subárbol izquierdo.
+   - Si no, inserta en el subárbol derecho.
+   - **BST**: Mantiene la propiedad de ordenación por `start`.
+
+2. **`searchID(node, id)`**: Busca si un ID está en algún rango.
+   - **Caso base**: Si `node == nullptr`, retorna `false`.
+   - **Verificación**: Si `start <= id <= end`, el ID está en el rango actual → retorna `true`.
+   - **Poda izquierda**: Si `id < start`, solo busca en el subárbol izquierdo (optimización).
+   - **Búsqueda completa**: Si `id >= start`, busca en ambos subárboles porque rangos de la izquierda podrían tener un `end` que cubra el ID (rangos solapados).
+
+3. **`deleteTree(node)`**: Libera memoria recursivamente (recorrido post-orden).
+
+**Función `solve()`:**
+- Crea un BST e inserta todos los rangos.
+- Para cada ID, verifica si está contenido en algún rango usando `bst.contains(id)`.
+- Cuenta y retorna el total de IDs frescos.
+
+**Flujo en `main()`:**
+- Lee rangos hasta encontrar línea vacía (formato `inicio-fin`).
+- Lee los IDs a verificar.
+- Llama a `solve()` e imprime el resultado.
 
 ### Alternativas que se han probado y descartado o que se podrían plantear para mejorar la resolución
-Hemos implementado también una segunda versión más sencilla a nivel de código que también es funcional. Esta versión no utiliza estructura de árbol por lo que no es tan eficiente. 
+
+**Evolución de la solución:**
+
+Partimos de una versión inicial (`Day5.vs2.cpp`) que utiliza **merge de intervalos + búsqueda binaria**:
+
+1. **Merge de intervalos**: Ordena los rangos por `start` y los fusiona si se solapan (`current.start <= last.end`). Esto convierte rangos solapados en rangos disjuntos.
+2. **Búsqueda binaria**: Sobre los rangos fusionados, busca en O(log n) si un ID pertenece a alguno.
+
+Decidimos evolucionar hacia la versión con BST (`Day5.cpp`) porque:
+- Demuestra conocimiento de estructuras de árboles.
+- Es más flexible para operaciones dinámicas (insertar/eliminar rangos).
+- La búsqueda en rangos solapados es más natural con recursión en árbol.
+
+**Alternativas descartadas:**
+- **Búsqueda lineal**: Verificar cada ID contra todos los rangos sería O(n×m), ineficiente para inputs grandes.
+- **Hash set de todos los IDs frescos**: Expandir cada rango a IDs individuales consumiría demasiada memoria para rangos grandes.
+
+**Posibles mejoras no implementadas:**
+- **Árbol AVL o Red-Black**: Para garantizar O(log n) en peor caso (el BST simple puede degradarse a O(n) si los rangos están ordenados).
+- **Interval Tree**: Estructura especializada para búsqueda en intervalos que optimiza la búsqueda en rangos solapados.
 
 ### Valoración personal sobre qué se ha aprendido y porqué ha sido significativo
-Hemos aprendido la estructura correcta de los árboles y cómo implementarlos para mejorar la eficiencia y el orden del código.
+Hemos aprendido la estructura correcta de los árboles binarios de búsqueda y cómo implementarlos desde cero para resolver problemas de búsqueda en rangos. También hemos comprendido la técnica de merge de intervalos, muy útil para problemas donde los rangos pueden solaparse. La comparación entre ambas soluciones nos ha ayudado a entender cuándo usar cada enfoque según las características del problema.

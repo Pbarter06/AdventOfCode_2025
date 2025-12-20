@@ -34,13 +34,13 @@ La solución modela la cuadrícula como un grafo implícito donde el camino se p
 
 1. **Caso base (líneas 17-18)**: Si la posición está fuera de límites o la celda ya fue visitada (`dp[r][c] == true`), la recursión termina. Aquí se aplica la **memoización**: consultamos la tabla `dp` para evitar reprocesar celdas.
 
-2. **Marcado de visitado (línea 21)**: Se marca `dp[r][c] = true`. Esta es la **actualización de la tabla de PD** que garantiza que cada celda se procese una sola vez.
+2. **Marcado de visitado**: Se marca `dp[r][c] = true`. Esta es la **actualización de la tabla de PD** que garantiza que cada celda se procese una sola vez.
 
-3. **Lógica de split (líneas 23-28)**: Si encontramos un separador (`^`):
+3. **Lógica de split**: Si encontramos un separador (`^`):
    - Incrementamos el contador `splits`.
    - **DFS**: Realizamos dos llamadas recursivas (`explore(r+1, c-1)` y `explore(r+1, c+1)`) que exploran las ramas izquierda y derecha en profundidad.
 
-4. **Paso normal (líneas 29-31)**: Si es espacio vacío, **DFS** continúa hacia abajo con `explore(r+1, c)`.
+4. **Paso normal**: Si es espacio vacío, **DFS** continúa hacia abajo con `explore(r+1, c)`.
 
 5. **Backtracking implícito**: Al terminar las llamadas recursivas, el DFS retrocede automáticamente para explorar otras ramas pendientes.
 
