@@ -15,11 +15,21 @@ En este apartado se emplean Tablas Hash que sirve para guardar cada dispositivo.
 Además se han implementado "unordened_map" y "unordened_set" para guardar resultados calculados y no repetirlos y para evitar bucles infinitos.
 
 ### ¿Cómo se ha abordado la resolución del problema?
-El programa empieza definiendo la estructura de un nodo, que guarda el nombre del dispositivo, sus destinos y un puntero al siguiente nodo en caso de colisión.
-Luego se implementa la clase de la tabla hash, que tiene un vector fijo de nodos y una función hash que convierte cada palabra en un número sumando sus letras y tomando el resto con el tamaño de la tabla. Con esto se pueden insertar dispositivos y sus conexiones, y si hay colisiones se manejan con listas enlazadas. También se puede buscar un dispositivo recorriendo la lista en la posición que le corresponde.
-Después está la función recursiva `contarCaminos`, que sirve para contar cuántos caminos hay desde un nodo hasta “out”. Si el nodo actual es “out” ya tenemos un camino válido, si ya se calculó antes se devuelve el resultado guardado, si el nodo está en proceso significa que hay un ciclo y no se cuenta, y si existe en la tabla se recorren sus destinos y se suman los caminos de cada uno. Al final se guarda el resultado en `memo` para no repetir cálculos.
-En la función principal se crea la tabla hash con tamaño fijo, se leen las líneas de entrada con el formato dispositivo: destinos, se limpian los espacios y se separan los destinos en un vector, se insertan los dispositivos en la tabla hash y finalmente se llama a `contarCaminos` desde “you” hasta “out” para calcular el número total de caminos y mostrarlo por pantalla.
-En resumen, el código construye una tabla hash para guardar dispositivos y sus conexiones y luego usa una función recursiva con memoización y control de ciclos para contar todos los caminos posibles.
+El programa empieza definiendo un nodo que representa cada dispositivo, con su nombre, sus destinos y un puntero al siguiente por si hay colisiones en la tabla hash. Luego se crea la TablaHash, que es un vector fijo donde cada posición puede tener una lista enlazada. La función hash simplemente suma los caracteres del nombre y hace el resto con el tamaño de la tabla. Con esto se pueden insertar dispositivos y buscarlos recorriendo la lista que toque.
+
+Como hace falta evitar repetir cálculos y también detectar ciclos, se han creado dos tablas hash más, también hechas a mano:
+
+TablaMemo, que guarda cuántos caminos tiene cada nodo ya calculado.
+
+TablaSet, que marca qué nodos están siendo procesados para detectar bucles.
+
+Las dos funcionan igual que la tabla principal: vector fijo, función hash sencilla y listas enlazadas.
+
+La función importante es contarCaminos, que es recursiva. Si el nodo es “out”, ya hay un camino. Si el resultado ya está guardado en memo, se devuelve. Si el nodo está en enProceso, significa que hay un ciclo y ese camino no vale. Si el nodo existe, se recorren sus destinos y se van sumando los caminos de cada uno. Al final se guarda el resultado en memo.
+
+En el main se crea la tabla hash, se leen las líneas de entrada, se limpian los espacios, se separan los destinos y se insertan todos los dispositivos. Cuando ya está todo cargado, se llama a contarCaminos empezando desde “you” y se muestra el número total de caminos hasta “out”.
+
+En resumen, el programa construye una tabla hash para representar la red y usa dos tablas hash adicionales para hacer memoización y detectar ciclos sin usar estructuras de la STL.
 
 ### ¿Qué alternativas se han probado o descartado?
 Para resolver este ejercicio hemos probado e implementado las Tablas Hash y Grafos. Hemos descartado hacerlo con DyV ya que los caminos no se pueden separarsin tener que recalcular muchas conexiones, el código tendría que repetir algunos cálculos haciendo el algoritmo más lento.
