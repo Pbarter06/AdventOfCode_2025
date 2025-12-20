@@ -16,12 +16,19 @@ Además se han implementado "unordened_map" y "unordened_set" para guardar resul
 
 ### ¿Cómo se ha abordado la resolución del problema?
 El programa empieza definiendo un nodo que representa cada dispositivo, con su nombre, sus destinos y un puntero al siguiente por si hay colisiones en la tabla hash. Luego se crea la TablaHash, que es un vector fijo donde cada posición puede tener una lista enlazada. La función hash simplemente suma los caracteres del nombre y hace el resto con el tamaño de la tabla. Con esto se pueden insertar dispositivos y buscarlos recorriendo la lista que toque.
+
 Como hace falta evitar repetir cálculos y también detectar ciclos, se han creado dos tablas hash más, también hechas a mano:
+
 TablaMemo, que guarda cuántos caminos tiene cada nodo ya calculado.
+
 TablaSet, que marca qué nodos están siendo procesados para detectar bucles.
+
 Las dos funcionan igual que la tabla principal: vector fijo, función hash sencilla y listas enlazadas.
+
 La función importante es contarCaminos, que es recursiva. Si el nodo es “out”, ya hay un camino. Si el resultado ya está guardado en memo, se devuelve. Si el nodo está en enProceso, significa que hay un ciclo y ese camino no vale. Si el nodo existe, se recorren sus destinos y se van sumando los caminos de cada uno. Al final se guarda el resultado en memo.
+
 En el main se crea la tabla hash, se leen las líneas de entrada, se limpian los espacios, se separan los destinos y se insertan todos los dispositivos. Cuando ya está todo cargado, se llama a contarCaminos empezando desde “you” y se muestra el número total de caminos hasta “out”.
+
 En resumen, el programa construye una tabla hash para representar la red y usa dos tablas hash adicionales para hacer memoización y detectar ciclos sin usar estructuras de la STL.
 
 ### ¿Qué alternativas se han probado o descartado?
