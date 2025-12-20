@@ -68,7 +68,7 @@ public:
     }
 };
 
-// Tabla hash para memo 
+// Struct para poder implementar la tabla Memo
 // nodo para guardar una clave y su valor (igual que unordered_map pero hecho a mano)
 struct NodoMemo {
     // guarda el nombre del nodo (la palabra)
@@ -81,7 +81,7 @@ struct NodoMemo {
     NodoMemo(string c, long long v) : clave(c), valor(v), sig(nullptr) {}
 };
 
-// tabla hash para guardar los resultados ya calculados 
+// Clase de tabla Memo
 class TablaMemo {
 private:
     // vector fijo donde cada posición apunta a una lista de nodos
@@ -165,7 +165,7 @@ public:
 };
 
 
-// Tabla hash para enProceso 
+// Struct para poder implementar la tabla Set
 // nodo para guardar solo la clave
 struct NodoSet {
     // guarda la palabra
@@ -176,7 +176,7 @@ struct NodoSet {
     NodoSet(string c) : clave(c), sig(nullptr) {}
 };
 
-// tabla hash para marcar nodos que están en la recursión (para detectar bucles)
+// Clase de tabla Set
 class TablaSet {
 private:
     // vector fijo donde cada posición apunta a una lista de nodos
