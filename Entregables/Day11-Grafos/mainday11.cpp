@@ -20,15 +20,32 @@ class Nodo{
 
 class Grafo{
     public:
-    unordered_map<string, Nodo*> nodos;     //diccionario asocia el nombre del nodo con el puntero
+    vector<Nodo*> nodos;     //vector que guarda todos los nodos
 
-    //devuelve un puntero al nodo con es enombre (o lo crea)
+    //función que busca un nodo por su nombre
+    Nodo* buscarNodo(const string& nombre){
+        for(Nodo* n: nodos){    //recorrer todos los punteros del vector
+            if(n->nombre==nombre){    //si el nombre coincide (si existe el nodo)
+                return n;    //devuelve ese puntero
+            }
+        }    //no se ha encontrado
+        return nullptr;
+    }
+
+    //devuelve un puntero al nodo con es nombre (o lo crea)
     Nodo* crearNodo(const string& nombre){
-        if(nodos.find(nombre)==nodos.end()){  //si no existe aún -> crear nuevo nodo
-            nodos[nombre]= new Nodo(nombre);
+        Nodo* nuevo= new Nodo(nombre);    //reserva memoria para un nuevo Nodo con ese nombre
+        nodos.push_back(nuevo);    //guardar el puntero en el vector de nodos
+        return nuevo;    //devolver el puntero al nuevo nodo
+    }
+
+    //función que devuelve el puntero a un nodo con ese nombre o si no existe lo crea y lo devuelve
+    Nodo* obtenerOCrear(const string& nombre){
+        Nodo* existente= buscarNodo(nombre);    //buscar el nodo que ya existe y sino crearlo
+        if(existente != nullptr){    //si se ha encontrado
+            return existente;        //devolver
         }
-        //si existe-> devolver el puntero del nodo
-        return nodos[nombre];
+        return crearNodo(nombre);    //crear uno nuevo y devolverlo
     }
 
     //función que une el nodo origen (org) hacia el resto de los destinos (fnl)
@@ -42,6 +59,7 @@ class Grafo{
         }
     }
 
+    //DFS que construye todos los caminos y los cuenta
     void Camino(Nodo* nactual, Nodo* final, vector<string>& camino, vector<vector<string>>&todosCaminos, int& contadorCaminos){
             //si no hemos llegado al nodo objetivo
         if(nactual==final){
@@ -146,7 +164,6 @@ int main(){
     cout << "Numero total de caminos (size):     " << caminos.size() << "\n\n";
 
     //mostrar caminos
-    // Mostrar caminos
     for (const auto& p : caminos) {
         for (size_t i = 0; i < p.size(); i++) {
             cout << p[i];
@@ -158,3 +175,4 @@ int main(){
     archivo.close();
     return 0;
 }
+
