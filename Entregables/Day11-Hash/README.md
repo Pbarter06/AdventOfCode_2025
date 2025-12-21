@@ -5,7 +5,7 @@
 - Finn Alai Perea Oltmann  
 - Paula Barona Terol  
 - Ainhoa López Gómez  
-- Claudia Moreno Martínez  
+- Claudia Moreno Martínez 
 
 ### ¿Por qué se ha elegido este problema?
 Se ha elegido este problema ya que, leyendo el enunciado era el más propenso a poder implementar casi todos los métodos. En este caso, lo hemos resuelto mediante diferentes técnicas que se explicarán a continuación
