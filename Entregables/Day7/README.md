@@ -20,7 +20,7 @@ En este día hemos implementado las siguientes técnicas:
 
 - **DFS (Depth-First Search)**: Búsqueda en profundidad que explora cada rama hasta el fondo antes de retroceder. Se implementa mediante recursión en la función `explore()`, donde cada llamada recursiva representa seguir un rayo hacia abajo o en diagonal.
 
-- **Programación Dinámica (memoización)**: Se utiliza una tabla booleana `dp[r][c]` que almacena si una celda ya ha sido visitada. Esto evita procesar la misma celda múltiples veces cuando varios rayos convergen en el mismo punto, garantizando que cada split se cuente exactamente una vez.
+- **Programación Dinámica (memorización)**: Se utiliza una tabla booleana `dp[r][c]` que almacena si una celda ya ha sido visitada. Esto evita procesar la misma celda múltiples veces cuando varios rayos convergen en el mismo punto, garantizando que cada split se cuente exactamente una vez.
 
 ### Cómo se ha abordado la resolución del problema
 La solución modela la cuadrícula como un grafo implícito donde el camino se propaga hacia abajo, dividiéndose en dos al encontrar un separador (`^`).
