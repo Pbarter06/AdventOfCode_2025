@@ -72,7 +72,7 @@ El objetivo de la función es localizar nodos ya existentes evitando así duplic
         return nuevo;    
     }
 ```
-Este método recibe un nombre de nodo origen y un vector de nombres destino. Para cada uno de ellos, crea los nodos correspondientes y añade una arista desde el nodo origen haciia cada nodo destino mediante el método `nextnodo`.
+Este método recibe un nombre de nodo origen y un vector de nombres destino. Para cada uno de ellos, crea los nodos correspondientes y añade una arista desde el nodo origen hacia cada nodo destino mediante el método `nextnodo`.
 
 ```
 void Camino(Nodo* nactual, Nodo* final, vector<string>& camino, vector<vector<string>>&todosCaminos, int& contadorCaminos){
@@ -114,7 +114,7 @@ Este programa mantiene dos formas de verificar el número de caminos encontrados
 Finalmente, el programa imprime por pantalla el número total de caminos encontrados y cuales son esos caminos.
 
 ## ¿Qué alternativas se han probado o descartado?
-Al enfretarnos al desafío de encontrar caminos con un inicio y un final fuimos conscientes de que existen numerosos enfoques algorítmivos que podrían resolver dicho desafio. Cada uno de los métodos alternativos que al final optamos por no implementar tenían sus ventajas y desventajas como se explican a continuación:
+Al enfretarnos al desafío de encontrar caminos con un inicio y un final fuimos conscientes de que existen numerosos enfoques algorítmivos que podrían resolver dicho desafío. Cada uno de los métodos alternativos que al final optamos por no implementar tenían sus ventajas y desventajas como se explican a continuación:
 - Matriz de Adyacencia: una manera de abordar el problema era crear una matriz booleana de tamaño `[N][N]` donde `N` sería el número de nodos. Sin embargo, se descartó esta opción por el coste en memoria, ya que si los nodos tienen nombres (`strings`) se tendría que mapear cada string a un entero. Además, otra desventaja es que si se trataba de un grafo con pocos caminos entre muchos nodos la matriz desperdiciaría mucha memoria, mientras que la lista de adyacencia implementada solo usa memoria proporcional a las conexiones que existen entre nodos.
 - Algoritmo BFS (_Breadth First Search_): este algoritmo consiste en una búsqueda en anchura usando una cola, el motivo de descarte fue que el equipo no contaba con el conocimiento necesario para implementarlo de manera eficiente y supondría más un problema a una solución eficiente.
 - Tabla Hash: esta opción de abordar el problema resultó ser bastante equivalente en cuanto a términos de eficiencia como esta opción de solución, por lo que se decidió por aplicarla también y explicar dos tipos de soluciones diferentes para un mismo problema.
