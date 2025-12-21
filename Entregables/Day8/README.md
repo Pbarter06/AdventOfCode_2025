@@ -11,7 +11,7 @@
 ## ¿Por qué se ha elegido este problema?
 Se ha elegido este problema concretamente porque combina los grafos junto a la ordenación de las cajas.
 
-A diferencia de un problema de grafos como el desafío del día 11, éste problema juega con una variable que el día 11. Este problema se basa en la distancia entre cajas, es decir, dado un conjunto de puntos en el espacio, se debe determinar cómo agrupar las cajas solamente considerando las distancias más cortas.
+A diferencia de un problema de grafos como el desafío del día 11, este problema juega con una variable física que el día 11 no tiene en cuenta. Este problema se basa en la distancia entre cajas, es decir, dado un conjunto de puntos en el espacio, se debe determinar cómo agrupar las cajas solamente considerando las distancias más cortas.
 
 Es por este enfoque diferente por lo que nos hemos querido atrever a resolverlo y elegirlo como candidato.
 
@@ -39,7 +39,7 @@ La primera parte del programa consiste en la definición de la estructura `DSU` 
         for(int i = 0; i < n; i++) padre[i] = i;
     }
 ```
-El método constructor de la estructura `DSU`recibe un número `n`y crea incialmente `n`conjuntos independientes. De esa manera, asigna a cada elemento como padre de sí mismo y establece el tamaño de cada conjunto en uno.
+El método constructor de la estructura `DSU` recibe un número `n`y crea incialmente `n` conjuntos independientes. De esa manera, asigna a cada elemento como padre de sí mismo y establece el tamaño de cada conjunto en uno.
 
 ```
     int find(int x){
@@ -47,7 +47,7 @@ El método constructor de la estructura `DSU`recibe un número `n`y crea incialm
         return padre[x] = find(padre[x]);
     }
 ```
-El método `find()` implementa la operación fundamental de búsqueda del respesentante de un elemento. Si el elemento es su propio padre, es decir, que es la raíz del conjunto (sería equivalente al caso base), se devuelve (`return x`). En cambio, si no se trata del caso base, entonces se llama recursivamnete a `find()`sobre su padre. De la misma manera, el pasde del elemento se actualiza para apuntar directamente a la raíz. Esta implementación recursiva reduce a gran escala la profundudad compleja de los árboles internos.
+El método `find()` implementa la operación fundamental de búsqueda del respesentante de un elemento. Si el elemento es su propio padre, es decir, que es la raíz del conjunto (sería equivalente al caso base), se devuelve (`return x`). En cambio, si no se trata del caso base, entonces se llama recursivamnete a `find()` sobre su padre. De la misma manera, el padre del elemento se actualiza para apuntar directamente a la raíz. Esta implementación recursiva reduce a gran escala la profundidad compleja de los árboles internos.
 
 ```
     void unir(int a, int b){
@@ -59,7 +59,7 @@ El método `find()` implementa la operación fundamental de búsqueda del respes
         tam[a] += tam[b];
     }
 ```
-El método `unir()` permite fusionar los conjuntos que contienen a dos elementos dados. Primero se obtienen las raíes reales de ambos a través de la función `find()`. Si ambas raíces coindicen (`if(a==b)`) significa que pertenecer al mismo conjunto y no es necesario hacer nada. Sin embargo, si son diferentes, se aplica la técnica de unión por tamaño, es decir, el conjunto más pequeño se une al más grande para mantener los árboles lo más planos posinles para evitar mayores dificultades. 
+El método `unir()` permite fusionar los conjuntos que contienen a dos elementos dados. Primero se obtienen las raíces reales de ambos a través de la función `find()`. Si ambas raíces coindicen (`if(a==b)`) significa que pertenecer al mismo conjunto y no es necesario hacer nada. Sin embargo, si son diferentes, se aplica la técnica de unión por tamaño, es decir, el conjunto más pequeño se une al más grande para mantener los árboles lo más planos posibles para evitar mayores dificultades. 
 Finalmente, se actualiza el tamaño del conjunto resultante sumando los tamaños de ambos porque se han unido.
 
 
@@ -86,7 +86,7 @@ Este último valor será la solución al desafío del día 8 del Advent Of Code.
 
 
 ## ¿Qué alternativas se han probado o descartado?
-Incialmente se planteó recorrer todos los pares de forma bruta, pero esa opción se descrató  de forma casi automática, puesto que suponía una eficiencia casi nula. 
+Incialmente se planteó recorrer todos los pares de forma bruta, pero esa opción se descartó  de forma casi automática, puesto que suponía una eficiencia casi nula. 
 Luego, se consideró recorrer también todos los pares y unirlos si la distancia era menor que una variable fija que implementaríiamos nosotros manualmente. Sin embargo, eso no garantizaba que se seleccionaran los pares correctos por lo que el margen de error aumentaba a un porcentaje muy alto.
 
 ## Valoración personal
