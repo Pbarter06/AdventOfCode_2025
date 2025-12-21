@@ -11,7 +11,11 @@
 Se ha elegido este problema ya que, leyendo el enunciado era el más propenso a poder implementar casi todos los métodos. En este caso, lo hemos resuelto mediante diferentes técnicas que se explicarán a continuación
 
 ### ¿Qué técnica o estructura de datos (o las dos) se emplean?
-En este ejercicio se han usado tablas hash hechas a mano, sin usar las de la STL. La primera tabla hash sirve para guardar cada dispositivo y a dónde se conecta. Además, como la función recursiva necesita recordar resultados y también saber si un nodo está siendo procesado para evitar ciclos, se han tenido que crear dos tablas hash más: una para guardar los resultados ya calculados (memoización) y otra que funciona como un “set” para marcar los nodos que están en proceso. Las tres tablas funcionan igual: tienen un vector fijo, una función hash sencilla y listas enlazadas para manejar colisiones. Con estas estructuras se  puede guardar la información rápido y evitar repetir cálculos o caer en bucles.
+En este ejercicio se han usado tablas hash hechas a mano, sin usar las de la STL. 
+La primera tabla hash sirve para guardar cada dispositivo y a dónde se conecta. Además, como la función recursiva necesita recordar resultados y también saber si un nodo está siendo procesado para evitar ciclos, se han tenido que crear dos tablas hash más: 
+Una para guardar los resultados ya calculados (memoización) y otra que funciona como un “set” para marcar los nodos que están en proceso. 
+Las tres tablas funcionan igual: tienen un vector fijo, una función hash sencilla y listas enlazadas para manejar colisiones. 
+Con estas estructuras se  puede guardar la información rápido y evitar repetir cálculos o caer en bucles.
 
 ### ¿Cómo se ha abordado la resolución del problema?
 El programa empieza definiendo un nodo que representa cada dispositivo, con su nombre, sus destinos y un puntero al siguiente por si hay colisiones en la tabla hash. Luego se crea la TablaHash, que es un vector fijo donde cada posición puede tener una lista enlazada. La función hash simplemente suma los caracteres del nombre y hace el resto con el tamaño de la tabla. Con esto se pueden insertar dispositivos y buscarlos recorriendo la lista que toque.
