@@ -38,12 +38,12 @@ El código presenta una solución al problema de encontrar todos los caminos pos
 En este caso, el programa busca todos los caminos que van desde el nodo llamado "**you**" hasta el nodo llamado "**out**" , procesando la información desde un archivo de entrada que describe la estructura de un grafo.
 
 La solución comienza con un diseño orientado a objetos que modela el grafo mediante dos clases principales. La primera clase, **clase Nodo**. Esta clase representa cada vértice individual del grafo. Cada nodo contiene su identificador en forma de cadena de texto (`string nombre`) y mantiene una lista de punteros hacia otros nodos (`vector<Nodo*>siguiente`), representando de esta manera las conexiones salientes o aristas dirigidas desde ese nodo. 
-```
+```cpp
 Nodo(const string& nombre): nombre(nombre){
 }
 ```
 El método constructor recibe el nombre del nodo y lo almacena. Asimismo, la **clase Nodo** también implementa la siguiente función:
-```
+```cpp
 void nextnodo(Nodo* otro){
   siguiente.push_back(otro);
 }
@@ -52,7 +52,7 @@ Este método implementado en la **clase Nodo** añade un puntero a otro nodo den
 
 Por otro lado, en cuanto a la **clase Grafo** se observa como contiene un atributo (`vector<Nodo*>nodos`) que permitirá almacenar todos los nodos creados. Esta clase implementa toda la lógica necesaria para la contrucción y recorrido del grafo. Asimismo, la clase Nodo va a permitir una gran ventaja, ya que permite un acceso eficiente en tiempo constante promedio para localizar cualquier nodo por su nombre.
 
-```
+```cpp
 Nodo *buscarNodo(const string& nombre){
   for(Nodo * n: nodos){
     if(n->nombre==nombre){
@@ -65,7 +65,7 @@ Nodo *buscarNodo(const string& nombre){
 El primer método que se observa en la **clase Grafo** es `buscarNodo`, este método recibe un nombre y recorre de manera secuencial el vector de nodos buscando un nodo cuyo atributo `nombre`coincida con el que se ha solicitado. Si lo encuentra, es decir, la condición del if es `True` (entra en el if) devolverá el puntero; si no encuentra el atributo `nombre`que coincida, en ese caso devolverá `nullptr`. 
 El objetivo de la función es localizar nodos ya existentes evitando así duplicarlos.
 
-```
+```cpp
     Nodo* crearNodo(const string& nombre){
         Nodo* nuevo= new Nodo(nombre);    
         nodos.push_back(nuevo);    
@@ -74,7 +74,7 @@ El objetivo de la función es localizar nodos ya existentes evitando así duplic
 ```
 Este método recibe un nombre de nodo origen y un vector de nombres destino. Para cada uno de ellos, crea los nodos correspondientes y añade una arista desde el nodo origen hacia cada nodo destino mediante el método `nextnodo`.
 
-```
+```cpp
 void Camino(Nodo* nactual, Nodo* final, vector<string>& camino, vector<vector<string>>&todosCaminos, int& contadorCaminos){
         if(nactual==final){
             todosCaminos.push_back(camino);
@@ -90,7 +90,7 @@ void Camino(Nodo* nactual, Nodo* final, vector<string>& camino, vector<vector<st
 ```
 La función `Camino` implementa un recorrido en profundidad (_DFS_). Recibe el nodo actual, el nodo final, el camino recorrido hasta el momento, un vector donde se almacena todos los caminos completos y un contador de caminos pasado por referencia. Si el nodo actual es el nodo final, significa que se ha encontrado un camino completo, por lo que se añade una copia del camino al vector de caminos y se incrementa el contador. Si no se ha llegado al final, la función recorre todas las salidas del nodo actual. Por cada nodo siguiente, añade un nombre al camino, llama recursivamente a `Camino` para seguir explorando y luego, elimina el último elemento del camino para deshacer el paso (técnica _backtracking_).
 
-```
+```cpp
  vector<vector<string>> encontrarTodosCaminos(const string& start, const string& end, int& contadorCaminos){
         vector<vector<string>> todosCaminos;
         vector<string> camino;
