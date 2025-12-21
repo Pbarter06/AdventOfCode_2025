@@ -92,7 +92,7 @@ int main(){
     }
 
     //contar tamaños de cada componente
-    unordered_map<int, long long> tamComp;
+    vector<long long> tamCompn,0);
 
     for(int i = 0; i < n; i++){ 
         int r = dsu.find(i);
@@ -101,7 +101,10 @@ int main(){
 
     //pasar tamaños a vector y guardarlos (forma vector)
     vector<long long> tamanos;
-    for(auto &p : tamComp) tamanos.push_back(p.second);
+     for(int i = 0; i < n; i++){
+        if(tamComp[i] > 0)            // solo raíces reales (componentes no vacíos)
+            tamanos.push_back(tamComp[i]);
+    }
 
     //ordenar de mayor a menor
     sort(tamanos.rbegin(), tamanos.rend());
@@ -117,4 +120,5 @@ int main(){
 
     return 0;
 }
+
 
