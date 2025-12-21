@@ -32,7 +32,7 @@ La primera parte del programa consiste en la definición de la estructura `DSU` 
   1. `padre`: almacena para cada elemento cuál es su representante dentro del conjunto.
   2. `tam`: guarda el tamaño del conjunto cuya raíz es cada elemento.
 
-```
+```cpp
     DSU(int n){
         padre.resize(n);
         tam.assign(n, 1);
@@ -41,7 +41,7 @@ La primera parte del programa consiste en la definición de la estructura `DSU` 
 ```
 El método constructor de la estructura `DSU` recibe un número `n`y crea incialmente `n` conjuntos independientes. De esa manera, asigna a cada elemento como padre de sí mismo y establece el tamaño de cada conjunto en uno.
 
-```
+```cpp
     int find(int x){
         if(padre[x] == x) return x;
         return padre[x] = find(padre[x]);
@@ -49,7 +49,7 @@ El método constructor de la estructura `DSU` recibe un número `n`y crea incial
 ```
 El método `find()` implementa la operación fundamental de búsqueda del respesentante de un elemento. Si el elemento es su propio padre, es decir, que es la raíz del conjunto (sería equivalente al caso base), se devuelve (`return x`). En cambio, si no se trata del caso base, entonces se llama recursivamnete a `find()` sobre su padre. De la misma manera, el padre del elemento se actualiza para apuntar directamente a la raíz. Esta implementación recursiva reduce a gran escala la profundidad compleja de los árboles internos.
 
-```
+```cpp
     void unir(int a, int b){
         a = find(a);
         b = find(b);
@@ -67,17 +67,17 @@ Una vez ya se ha definido la estructura DSU, está el programa principal `int ma
 Una vez llegados a este punto, lo primero que se ejecuta es la instrucción de abrir el fichero _input.txt_ obtenido por la página del Advent Of Code. Si se ha abierto correctamente, se procede a leer las coordenadas de cada caja, para ello ha sido necesario declarar un vector de arrays donde se almacenarán las coordenadas `x`, `y`, `z` de cada caja.
 
 Una vez que ya se han leído todas las lineas del archivo, se calcula el número total de cajas y se prepara un vector donde se almacenarán todos los pares posibles de cajas junto con la distancia al cuadrado entre ellas como se indica a continuación:
-```
+```cpp
 vector<tuple<long long,int,int>> pares; 
     pares.reserve((long long)n * (n - 1) / 2);
 ```
 Cabe recalcar que para evitar comparaciones redundantes, solo se considerarán pares `(i,j)`con `j>i`. A continuación, para cada par, se calcula la diferencia en cada coordenada y se obtiene la distancia al cuadrado, la cual será almacenada junto con los índices de ambas cajas.
 
-```
+```cpp
 sort(pares.begin(), pares.end());
 ```
 Una vez se han generado todos los pares, el vector se ordena de menor a mayor distancia. Esto permitirá procesar primero las cajas más cercanas entre sí, de esa forma se creará una estructura DSU con tantas posiciones como cajas que haya. Por consiguiente, se procederá a unir únicamente los mil pares más cercanos.
-```
+```cpp
 DSU dsu(n);
 ```
 Después de haberse realizado todas las uniones, el programa recorre todas las cajas y, para cada una, obtiene su raíz mediante la función `find()`.
