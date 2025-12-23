@@ -1,76 +1,96 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct DSU {
-    //padre-> para cada nodo i (alamacena su representante)
-    //tam-> tamaño del componente 
-    vector<int> padre, tam;
+//implementación de la clase Grafo
+class Grafo {
+public:
+    int n;                                   // número de nodos (vértices)
+    vector<vector<int>> adj;                 // matriz de adyacencia
 
-    //método constructor-> inicializar estructura para n elementos
-    DSU(int n){
-        padre.resize(n);
-        //mínimo tamaño 1
-        tam.assign(n, 1);
-        for(int i = 0; i < n; i++) padre[i] = i;
+    // método constructor
+    //se inicializa el grafo con n vértices y una matriz nxm llena de 0 (no se ha visitado aún)
+    Grafo(int n) : n(n) {
+        adj.assign(n, vector<int>(n, 0));    // matriz n×n inicializada a 0
     }
 
-    //devuelve la raíz del conjunto donde se encuentra x
-    int find(int x){
-        //CASO BASE
-        //si x ya es raíz-> devolver la raiz, osea x
-        if(padre[x] == x) return x;
-        //llamar recursivamente
-        return padre[x] = find(padre[x]);
+    // Añadir arista no dirigida entre a y b
+    void unir(int a, int b) {
+        adj[a][b] = 1;           // marcar conexión a->b
+        adj[b][a] = 1;          // marcar conexión b->a
     }
 
-    //función que une los componentes donde están a y b
-    void unir(int a, int b){
-        //buscar raices-> llamar a la función
-        a = find(a);
-        b = find(b);
-        //si es la misma raiz continuar
-        if(a == b) return;
-        //si son diferentes-> unir el + pequeño al grande
-        if(tam[a] < tam[b]) swap(a, b);
-        //a-> padre de b
-        padre[b] = a;
-        //sumar los tamaños porque se une
-        tam[a] += tam[b];
+    // DFS para calcular el tamaño del componente conectado
+    int dfs(int nodo, vector<int>& visitado) {
+        // marcar nodo como visitado
+        visitado[nodo] = 1;  
+        //inicializar el tamaño del componente a 1
+        int tam = 1;                         
+
+        // recorrer todos los nodos para ver si hay adyacencia
+        for (int i = 0; i < n; i++) {
+            if (adj[nodo][i] == 1 && !visitado[i]) {    //si hay enlace y el nodo no está visitado-> continuar recorrido
+                tam += dfs(i, visitado);     // sumar tamaño del subcomponente
+            }
+        }
+        //devolver tamaño total del componente
+        return tam;
+    }
+
+    // Obtener los tamaños de todos los componentes 
+    vector<int> obtenerComponentes() {
+        //crear vector para marcar vértices visitados
+        vector<int> visitado(n, 0);          // vector de nodos visitados
+        //crear vector para almacenar tamaños visitados
+        vector<int> tamanos;                 // tamaños de cada componente
+
+        //para cada vértice no visitado-> se hace un dfs y se guarda el tamaño
+        for (int i = 0; i < n; i++) {
+            if (!visitado[i]) {              // si el nodo no está visitado
+                int tam = dfs(i, visitado);  // calcular tamaño del componente
+                tamanos.push_back(tam);      // guardar tamaño
+            }
+        }
+        //devolver tamaño de todos los componentes
+        return tamanos;
     }
 };
 
-
-int main(){
+int main() {
+    //comprobar que se ha abierto correctamente el input.txt
     ifstream archivo("input.txt");
-    if(!archivo.is_open()){
-        cout << "Error al abrir el fichero." << endl;
+    //si no se ha abierto bien-> lanzar error
+    if (!archivo.is_open()) {
+        cout << "Error al abrir el fichero. Inténtelo más tarde." << endl;
         return 1;
     }
 
-    //guardar coordenadas de cada caja
+    //vector para almacenar las coordenadas de las cajas
     vector<array<long long,3>> cajas;
     string linea;
 
-    // Leer coordenadas
-    while(getline(archivo, linea)){
-        if(linea.empty()) continue;
+    // leer todo el fichero input línea a línea
+    while (getline(archivo, linea)) {
+        if (linea.empty()) continue;
+        //separar commas por espacios
         replace(linea.begin(), linea.end(), ',', ' ');
+        //extraer las coordenadas
         stringstream ss(linea);
         long long x, y, z;
         ss >> x >> y >> z;
         cajas.push_back({x, y, z});
     }
 
-    //contador de cajas leídas
     int n = cajas.size();
 
     // generar todos los pares con su distancia al cuadrado
-    vector<tuple<long long,int,int>> pares; 
+    vector<tuple<long long,int,int>> pares;
+    //reservar memoria para todos los pares posibles
     pares.reserve((long long)n * (n - 1) / 2);
 
-    //recorrer todos los pares (j>i para no comparar una caja consigo misma)
-    for(int i = 0; i < n; i++){
-        for(int j = i + 1; j < n; j++){
+    //recorrer todos los pares i y j
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            //calcular la distancia al cuadrado
             long long dx = cajas[i][0] - cajas[j][0];
             long long dy = cajas[i][1] - cajas[j][1];
             long long dz = cajas[i][2] - cajas[j][2];
@@ -79,46 +99,37 @@ int main(){
         }
     }
 
-    //ordenar por distancia de menor a mayor
+    // ordenar pares por distancia creciente
     sort(pares.begin(), pares.end());
 
-    //crear DSU y unir los 1000 pares más cercanos
-    DSU dsu(n);
+    // Ccrear grafo con n vértices (vacío)
+    Grafo g(n);
 
-    int limite = min(1000, (int)pares.size());  //número de pares límite para procesar
-    for(int k = 0; k < limite; k++){
+    // unir los 1000 pares más cercanos
+    //añadir enlaces con los 1000 pares + cercanos
+    int limite = min(1000, (int)pares.size());
+    for (int k = 0; k < limite; k++) {
         auto [d2, a, b] = pares[k];
-        dsu.unir(a, b);
+        g.unir(a, b);
     }
 
-    //contar tamaños de cada componente
-    vector<long long> tamCompn,0);
+    // obtener tamaños de los componentes que están conectados
+    vector<int> tamanos = g.obtenerComponentes();
 
-    for(int i = 0; i < n; i++){ 
-        int r = dsu.find(i);
-        tamComp[r]++;
-    }
-
-    //pasar tamaños a vector y guardarlos (forma vector)
-    vector<long long> tamanos;
-     for(int i = 0; i < n; i++){
-        if(tamComp[i] > 0)            // solo raíces reales (componentes no vacíos)
-            tamanos.push_back(tamComp[i]);
-    }
-
-    //ordenar de mayor a menor
+    // ordenar de mayor a menor
     sort(tamanos.rbegin(), tamanos.rend());
 
-    //multiplicar los 3 mayores
-    long long resultado = 1;    //inicializar resultado a 1
-    for(int i = 0; i < 3 && i < (int)tamanos.size(); i++){
+    // multiplicar los 3 componentes más grandes
+    long long resultado = 1;
+    for (int i = 0; i < 3 && i < (int)tamanos.size(); i++) {
         resultado *= tamanos[i];
     }
 
-    archivo.close();
+    //imprimir resultado final
     cout << resultado << endl;
-
     return 0;
 }
+
+
 
 
