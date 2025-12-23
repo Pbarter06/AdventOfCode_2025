@@ -18,72 +18,145 @@ Es por este enfoque diferente por lo que nos hemos querido atrever a resolverlo 
 ## ¿Qué técnica o estructura de datos (o las dos) se emplean?
 Para la resolución de este problema no se ha optado por un enfoque simple, al revés, se busca una solución que implemente una estructura de datos avanzada lo cual supondrá una gran ventaja a la hora de resolverlo.
 
-Así pues, a la hora de revisar el código se puede verificar a simple vista que se ha hecho uso de un tipo de estructura denominada **DSU** (_Disjoint Set Union_/_Union-Find_). Esta estructura se emplea generalmente para gestionar conjuntos de elementos particionados. Consta de:
-- `vector<int>padre`: almacena el árbol genealógico de los nodos. Si `padre[i]==1`, entonces ese nodo es la raíz (`root`) de su grupo.
-- `vector<int>tam`: mantiene el conteo de cuántos elementos pertenecen a cada conjunto. Es muy importante para optimizar las uniones de las cajas.
+En la resolución se ha empleado una **estructura de datos de grafo no dirigido** , representada mediante una matriz de adyacencia. 
+Cada caja de conexiones se moldea como un `vértice (nodo)` del grafo y cada `enlace` entre dos cajas se representa como un `1` en la matriz, indicando la existencia de una conexión bidireccional entre ambos vértices, es decir, que ese nodo ya ha sido visitado. Esta representación del problema permite comprobar de forma **directa** si dos cajas están conectadas y facilita la construcción progresiva del grafo a medida que se añaden los pares más cercanos.
 
-En conclusión, esta estructura permite que en el problema se agrupen elementos en componentes que estén conectados entre sí. De esta manera, accede que se eviten ciclos a la hora de ejecutar el código. Y, por ende, se utilizará un vector para almacenar dichas distancias entre los pares de cajas para más tarde ordenarse entre los pares más cercanos.
+Una vez construido el grafo, se utiliza la técnica de `DFS` (_Depth First Search_) que permite un recorrido en profundidad para identificar los distintos componentes conexos. Esta técnica permite explorar todos los vértices alcanzables desde un vértice inicial (origen) y acumulando el tamaño del componente correspondiente. DFS es la forma estándar de recorrer un grafo y de detrminar qué vértices pertenecen al mismo siguiendo exactamente los procedimientos adecuados.
+
+En conclusión, la solución se basa exclusivamente en una **matriz de adyacencia** como estructura de representación de un grafo y un **recorrido en profundidad** (_DFS_) como técnica de exploración para obtener los tamaños de los componentes.
 
 ## ¿Cómo se ha abordado la resolución del problema?
 Este código aborda un problema de agrupamiento de puntos a través de la identificación de componentes conectados que están próximos. 
 El prolema busca identificar un conjunto de elementos que están relacionados entre sí mediante un criterio de proxmidad. En este caso, el criterio de proximidad es el siguiente; "_la distancia entre dos cajas conectadas mediante una hilera de luces debe ser la más cercana para que la electricidad pueda circular por ellas_".
 
-La primera parte del programa consiste en la definición de la estructura `DSU` (_Disjoint Set Union_), que es una estructuta que como se ha explicado anteriormente gestiona conjuntos disjuntos de forma eficiente. Esta estructura mantiene dos vectores:
-  1. `padre`: almacena para cada elemento cuál es su representante dentro del conjunto.
-  2. `tam`: guarda el tamaño del conjunto cuya raíz es cada elemento.
+La resolución se ha basado en moldear la situación descrita anteriormente como un **grafo no dirigido** , donde cada caja de conexiones corresponde a un **vértice** y cada conexión entre dos cajas corresponde a un **enlace (arista)** del grafo. A partir de las coordenadas (_x, y, z_) se calcula la distancia en línea recta entre todas las parejas de cajas y se seleccionan los 1000 pares más cercanos para conectarlos en el grafo. Una vez construidos todos estos enlaces, el grafo queda estructurado en varios componentes conectados, éstos representan las diferentes hileras  de luces  formadas. Para conocer el tamaño de cada hilera, se ha recurrido a una técnica que permite **recorrer en profundidad** (`DFS`), la cual ayuda a la identificación de qué cajas pertenecen a cada componente y, además, determinar su tamaño. Finalmente, se ordenan los tamaños de los componentes y se calcula el producto de los tres mayores, este valor será la solución del día 8 del Advent Of Code.
+
+A partir de esta idea general, el código se organiza en dos partes principales:
+- Clase Grafo
+- Función main
+
+La clase **Grafo** encapsula la representación y el recorrido de él mismo. Mientras que por otro lado, la función **main** será el encargado de gestionar la lectura de datos, construcción de los pares más cercanos, la creación de las conexiones y el cálculo final del resultado.
 
 ```cpp
-    DSU(int n){
-        padre.resize(n);
-        tam.assign(n, 1);
-        for(int i = 0; i < n; i++) padre[i] = i;
+class Grafo {
+public:
+    int n;                                 
+    vector<vector<int>> adj;                 
+    Grafo(int n) : n(n) {
+        adj.assign(n, vector<int>(n, 0));    
+    }
+    ...
+};
+
+````
+Para representar el conjunto de cajas de conexiones y sus posibles enlaces, se ha implementado la **clase Grafo** basada en una **matriz de adyacencia** .
+En primer lugar, el método constructor `Grafo(int n): n(n)` recibe como parámetro el número total de nosos `n` , que en este contexto serían el número de cajas que han sido leídas del fichero _input.txt_ . A partir de este valor, se inicializa la matriz de adyacencia de tamaño `n x n` de enteros a cero. En la matriz cada posición àdj[i][j]` indicará si existe (1) o no existe (0) un enlace entre las cajas (i, j). De este modo, el grafo comienza vacío, sin ninguna onexión u se irá complementando posteriormente a medida que se procesen los pares de cajas más cercanas.
+
+```cpp
+    void unir(int a, int b) {
+        adj[a][b] = 1;                       
+        adj[b][a] = 1;                       
     }
 ```
-El método constructor de la estructura `DSU` recibe un número `n`y crea incialmente `n` conjuntos independientes. De esa manera, asigna a cada elemento como padre de sí mismo y establece el tamaño de cada conjunto en uno.
+La fución `unir()` es la encargada de añadir un enlace entre dos cajas del grafo. Dado que el problema moldea con variables físicas se ha optado por la implementación de un **grafo no dirigido**. POr ello, al añadir una conexión entre los vértices `a` y `b` , se marcan ambas posiciones en la matriz de adyacencia (`adj[a][b]  adj[b][a]`). Cda allamada a esta función corresponde, por tanto a una nueva hilera de luces que une dos cajas de conexiones.
 
 ```cpp
-    int find(int x){
-        if(padre[x] == x) return x;
-        return padre[x] = find(padre[x]);
+    int dfs(int nodo, vector<int>& visitado) {
+        visitado[nodo] = 1;                  
+        int tam = 1;                      
+        for (int i = 0; i < n; i++) {
+            if (adj[nodo][i] == 1 && !visitado[i]) {
+                tam += dfs(i, visitado);    
+            }
+        }
+        return tam;
     }
 ```
-El método `find()` implementa la operación fundamental de búsqueda del respesentante de un elemento. Si el elemento es su propio padre, es decir, que es la raíz del conjunto (sería equivalente al caso base), se devuelve (`return x`). En cambio, si no se trata del caso base, entonces se llama recursivamnete a `find()` sobre su padre. De la misma manera, el padre del elemento se actualiza para apuntar directamente a la raíz. Esta implementación recursiva reduce a gran escala la profundidad compleja de los árboles internos.
+Una vez construido el grafo, es necesario determinar qué cajas forman parte de cada hilera, es decir, de cada componnete conexo. Para ello se utiliza un **recorrido en profundidad (_DFS_)**, técnica estándar de la teoría de grafos.
+La función `dfs` recibe como parámetros el índiice del nodo inicial (origen) y un vector `visitado`que indica qué nodos han sido explorados previamente. En primer lugar, el nodo actual se marca como visitado y se inicializa el tamaño del componente a 1, ya que como mínimo el propio nodo pertenece al circuito. A continuación, se recorre la fila `adj[nodo]` de la matriz de adyacencia para comprobar qué otros nodos están conectados directamenre al nodo actual. Si existe un enlace, es dceir, `adj[nodo]==1` y el nodo `i` aún no ha sido visitado, se llama recursivamente a `dfs` sobre dicho nodo. La llamada recursiva devuelve el tamaño del subcomponente alcanzado de ese vecino, que se suma al tamaño acumulado. Cuando no quedan más vecinos por explorar, la función devuelve el tamaño total del componente conexo al que ertenece el nodo inicial.
 
 ```cpp
-    void unir(int a, int b){
-        a = find(a);
-        b = find(b);
-        if(a == b) return;
-        if(tam[a] < tam[b]) swap(a, b);
-        padre[b] = a;
-        tam[a] += tam[b];
+    vector<int> obtenerComponentes() {
+        vector<int> visitado(n, 0);       
+        vector<int> tamanos;                
+        for (int i = 0; i < n; i++) {
+            if (!visitado[i]) {             
+                int tam = dfs(i, visitado); 
+                tamanos.push_back(tam);     
+            }
+        }
+        return tamanos;
     }
 ```
-El método `unir()` permite fusionar los conjuntos que contienen a dos elementos dados. Primero se obtienen las raíces reales de ambos a través de la función `find()`. Si ambas raíces coindicen (`if(a==b)`) significa que pertenecer al mismo conjunto y no es necesario hacer nada. Sin embargo, si son diferentes, se aplica la técnica de unión por tamaño, es decir, el conjunto más pequeño se une al más grande para mantener los árboles lo más planos posibles para evitar mayores dificultades. 
-Finalmente, se actualiza el tamaño del conjunto resultante sumando los tamaños de ambos porque se han unido.
+La función `obtenerComponentes()` coordina la ejecución de `DFS` para descubrir **todos los componentes conexos** del grafo. Para ello, mantiene un vector `visitado` que inicialmente marca todos los nodos como no visitados. Se recorre secuencialmente cada nodo del grafo y, cuando se encuentra uno que todavía no ha sido visitado, se lanza un `dfs` desde él. Este DFS explora todo el componente conexo asociado a ese nodo, marcando todos los vértices alcanzables y devolviendo el tamaño total del circuito. Dicho tamaño se añade al vector `tamanos`, De esta forma, al finalizar el bucle, `tamanos`contiene el tamaño de cada componente conexo, es decir, de cada hilera de luces de cajas conectadas entre sí.
 
-
-Una vez ya se ha definido la estructura DSU, está el programa principal `int main()`.
-Una vez llegados a este punto, lo primero que se ejecuta es la instrucción de abrir el fichero _input.txt_ obtenido por la página del Advent Of Code. Si se ha abierto correctamente, se procede a leer las coordenadas de cada caja, para ello ha sido necesario declarar un vector de arrays donde se almacenarán las coordenadas `x`, `y`, `z` de cada caja.
-
-Una vez que ya se han leído todas las lineas del archivo, se calcula el número total de cajas y se prepara un vector donde se almacenarán todos los pares posibles de cajas junto con la distancia al cuadrado entre ellas como se indica a continuación:
 ```cpp
-vector<tuple<long long,int,int>> pares; 
+int main() {
+    ifstream archivo("input.txt");
+    if (!archivo.is_open()) {
+        cout << "Error al abrir el fichero." << endl;
+        return 1;
+    }
+    vector<array<long long,3>> cajas;
+    string linea;
+    while (getline(archivo, linea)) {
+        if (linea.empty()) continue;
+        replace(linea.begin(), linea.end(), ',', ' ');
+        stringstream ss(linea);
+        long long x, y, z;
+        ss >> x >> y >> z;
+        cajas.push_back({x, y, z});
+    }
+    int n = cajas.size();
+```
+La función `main()` comienza abriendo el fichero de entrada _input.txt_ obtenido en Advent Of Code. Este fichero de entrada contiene las coordenadas tridimensionales de cada caja de conexiones. Si el fichero no puede abrise se mostrará por pantalla un mensaje de error y el programa finalizará.
+
+A continuación, se declara un vectro `cajas` donde se almacenará las coordenadas (`x,y,z`) de ada caja, y se lee el archivo línea  alínea. Para facilitar la lectura de las coordenadas, se sustituten las comas por espacios y se utiliza `stringstream`para extraer los tres valores numéricos correspondientes a las coordenadas. Cada trío de coordenadas se guardan en el vector `cajas`. Finalmente, la variable `n`se inicializa con el número total de cajas leídas, que coincidirá con el número de vértices del grafo.
+
+```cpp
+    vector<tuple<long long,int,int>> pares;
     pares.reserve((long long)n * (n - 1) / 2);
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            long long dx = cajas[i][0] - cajas[j][0];
+            long long dy = cajas[i][1] - cajas[j][1];
+            long long dz = cajas[i][2] - cajas[j][2];
+            long long d2 = dx*dx + dy*dy + dz*dz;
+            pares.push_back({d2, i, j});
+        }
+    }
+    sort(pares.begin(), pares.end());
 ```
-Cabe recalcar que para evitar comparaciones redundantes, solo se considerarán pares `(i,j)`con `j>i`. A continuación, para cada par, se calcula la diferencia en cada coordenada y se obtiene la distancia al cuadrado, la cual será almacenada junto con los índices de ambas cajas.
+Una vez almacenadas las cajas, se genera la lista de todos los pares posibles de cajas, junto con la distancia al cuadrado entre ellas. Para ello se recorre con dos bucles anidados el rango de ínidices `[0, n]` considerando únicamente parejas con `j>i ` para no repetir ni comparar una caja consigo misma. Para cada para de índices (i,j), se calculan las diferencias `dx`, `dy` y `dz` entre las coordenadas d eambas cajas, y se obtiene la distancia al cuadrado.
+
+Cada par se almacena en el vector `pares`. Antes de llenar el vector, se reserva e¡memoria suficiente para albergar todas las combinaciones posibles, lo que mejora la eficiencia al evitar realocaciones repetidas. Una vez generados todos los pares, el vector se ordena de menor a mayor en función de la distancia, de forma que los pares más cercanos quedan al principio, tal como indica el enunciando del día 8 del Advent Of Code (primero conectar las caas más próximas).
 
 ```cpp
-sort(pares.begin(), pares.end());
+    Grafo g(n);
+    int limite = min(1000, (int)pares.size());
+    for (int k = 0; k < limite; k++) {
+        auto [d2, a, b] = pares[k];
+        g.unir(a, b);
+    }
 ```
-Una vez se han generado todos los pares, el vector se ordena de menor a mayor distancia. Esto permitirá procesar primero las cajas más cercanas entre sí, de esa forma se creará una estructura DSU con tantas posiciones como cajas que haya. Por consiguiente, se procederá a unir únicamente los mil pares más cercanos.
-```cpp
-DSU dsu(n);
-```
-Después de haberse realizado todas las uniones, el programa recorre todas las cajas y, para cada una, obtiene su raíz mediante la función `find()`.
-Los tamaños de los componentes se vuelcan a un vector y se ordenan de mayor a menor. Y finalmente, el programa calcula el producto de los tres componentes más grandes, inicializando el resultado a  uno e iterando sobre los tres primeros tamaños del vector. 
-Este último valor será la solución al desafío del día 8 del Advent Of Code.
+Tras ordenar los pares, se crea un obteo `Grafo g(N)` con `n`vértices y sin enlaces iniciales. A continuación, se determinará cuántos pares deben procesarse, en este caso los **1000 pares más cercanos** , por lo que se toma el mínimo entre 1000 y el número total de pares disponibles.
 
+En bucle, se recorren los ´limite´primero elementos del vector `pares`, que corresponden exatcamente a los pares de cajas más próximos entre sí. Para cada una de éstas, se extraen los ínidices `a`y `b` de las cajas implicadas y se llama a `g.unir(a,b)` , que añade un enlace no dirigido entre ambos vértices en la matriz de adyacencia. Al finalizar este bucle, el grafo representa completamente todos los hilos de luces generados al conectar los 1000 pares de cajas más cercanos.
+
+```cpp
+    vector<int> tamanos = g.obtenerComponentes();
+    sort(tamanos.rbegin(), tamanos.rend());
+    long long resultado = 1;
+    for (int i = 0; i < 3 && i < (int)tamanos.size(); i++) {
+        resultado *= tamanos[i];
+    }
+    cout << resultado << endl;
+    return 0;
+}
+```
+Con el grado ya construido, se llama al método `g.obtenerComponentes8)`, que recorre el grafo mediante `DFS`para decsubirr todos los componentes conexos y devuelve un vector con el tamaño de cada uno de ellos. Cada posición de este vector representa el número de cajas que forman un circuito independiente.
+
+Posteriormente, se ordenan estos tamaños de mayor a menos utilizando `sort`con iteradores inversos. Este orden permite acceder de forma directa a los tamaños de los tres circuitos más grandes, tal como se solicita. El código inicializa una variable `resultado`a 1 y recorre los tres primeros elementos del vector multiplicando sus valores. Finalmente, se muestra el resultado por pantalla y el programa termina.
 
 ## ¿Qué alternativas se han probado o descartado?
 Incialmente se planteó recorrer todos los pares de forma bruta, pero esa opción se descartó  de forma casi automática, puesto que suponía una eficiencia casi nula. 
