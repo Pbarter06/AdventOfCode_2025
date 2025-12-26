@@ -18,14 +18,13 @@ Hemos elegido este problema porque presenta características ideales para aplica
 
 ### Técnicas o estructuras de datos empleadas
 
-**Solución principal (`Day5.cpp`) - BST:**
 - **Árbol Binario de Búsqueda (BST)**: Estructura de datos donde cada nodo contiene un rango `[start, end]`. Los nodos se ordenan por `start`, permitiendo búsquedas eficientes.
 - **Búsqueda recursiva**: La función `searchID()` recorre el árbol buscando si un ID cae dentro de algún rango, explorando ambas ramas cuando es necesario por los rangos solapados.
 
 
 ### Cómo se ha abordado la resolución del problema
 
-**Estructuras de datos principales (`Day5.cpp`):**
+**Estructuras de datos principales:**
 - `range`: Estructura con `start` y `end` que representa un intervalo de IDs frescos.
 - `BSTNode`: Nodo del árbol con un rango y punteros a hijos izquierdo y derecho.
 - `RangeBST`: Clase que encapsula el árbol con métodos de inserción y búsqueda.
@@ -60,7 +59,7 @@ Hemos elegido este problema porque presenta características ideales para aplica
 
 **Evolución de la solución:**
 
-Partimos de una versión inicial (`Day5.vs2.cpp`) que utiliza **merge de intervalos + búsqueda binaria**:
+Partimos de una versión inicial (`Day5.vs2.cpp` fuera del directorio Entregables) que utiliza **merge de intervalos + búsqueda binaria**:
 
 1. **Merge de intervalos**: Ordena los rangos por `start` y los fusiona si se solapan (`current.start <= last.end`). Esto convierte rangos solapados en rangos disjuntos.
 2. **Búsqueda binaria**: Sobre los rangos fusionados, busca en O(log n) si un ID pertenece a alguno.
