@@ -7,6 +7,6 @@
 - Claudia Moreno Martínez
 
 ## Instrucciones
-En este repositorio se encuentran las soluciones a los problemas del Advent of Code. En cada una de las carpetas de los días correspondientes se encuentra una de las posibles soluciones, pero en la carpeta "otros" hay otras posibles soluciones pensadas por cada uno de los miembros. 
+En este repositorio se encuentran algunas de las soluciones a los problemas del Advent of Code. En la carpeta "otros" hay soluciones planteadas que hemos usado como base y sobre las cuales hemos podido trabajar.
 
-Las soluciones que hemos decidido entregar se encuentran en el directorio **Entregables**, donde están los directorios corresponientes a los días elegidos para resolver implementando las estructuras vistas en clase. 
+Las soluciones finales que hemos decidido entregar se encuentran en el directorio **Entregables**, donde están los directorios corresponientes a los días elegidos para resolver implementando las estructuras vistas en clase. 
