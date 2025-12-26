@@ -9,7 +9,7 @@
 - Claudia Moreno Martínez
 
 ### Justificación de la elección del Problema 
-Hemos elegido este problema porque presenta características ideales para aplicar las técnicas de DFS y Programación Dinámica:
+Hemos elegido este problema porque presenta características muy buenas para aplicar las técnicas de DFS y Programación Dinámica:
 
 - **Estructura de grafo implícito**: La cuadrícula representa un grafo donde cada celda es un nodo y los movimientos hacia abajo (o en diagonal tras un split) son las aristas. Esto hace que DFS sea una elección natural para explorar todos los caminos posibles.
 - **Caminos que convergen**: Cuando múltiples caminos llegan a la misma celda desde distintas direcciones, sin memoización contaríamos los mismos splits varias veces. La PD evita este sobreconteo marcando las celdas ya visitadas.
@@ -37,24 +37,22 @@ La solución modela la cuadrícula como un grafo implícito donde el camino se p
 
 La función devuelve el número de splits **nuevos** encontrados desde la celda `(r, c)`:
 
-1. **Caso base (línea 17)**: Si la posición está fuera de límites, devuelve 0 (no hay splits fuera del grid).
+1. **Caso base**: Si la posición está fuera de límites, devuelve 0 (no hay splits fuera del grid).
 
-2. **Consulta de memoización (líneas 20-22)**: Si `dp[r][c] >= 0`, la celda ya fue visitada y sus splits ya fueron contados. Se devuelve `0` para evitar contarlos de nuevo. Este es el patrón clásico de memoización:
+2. **Consulta de memoización**: Si `dp[r][c] >= 0`, la celda ya fue visitada y sus splits ya fueron contados. Se devuelve `0` para evitar contarlos de nuevo. Este es el patrón clásico de memoización:
    ```cpp
    if (dp[r][c] >= 0) return dp[r][c];
    ```
 
-3. **Cálculo del resultado (líneas 24-31)**:
+3. **Cálculo del resultado**:
    - Si encontramos un separador (`^`): `resultado = 1 + explore(izquierda) + explore(derecha)`
    - Si es espacio vacío: `resultado = explore(abajo)`
 
-4. **Guardado en tabla de memoización (líneas 34-36)**: Antes de devolver, se marca la celda como visitada guardando `0` en `dp[r][c]`:
+4. **Guardado en tabla de memoización**: Antes de devolver, se marca la celda como visitada guardando `0` en `dp[r][c]`:
    ```cpp
    dp[r][c] = 0;
    return resultado;
    ```
-
-Este esquema es análogo al de los números de Stirling donde primero se consulta `M[n,k]` y se guarda el resultado antes de devolverlo. La diferencia es que aquí guardamos `0` porque queremos indicar "ya procesado" y evitar contar los mismos splits múltiples veces.
 
 **Flujo en `main()`:**
 - Lee el grid y localiza la posición inicial `S`.
@@ -66,7 +64,7 @@ Este esquema es análogo al de los números de Stirling donde primero se consult
 
 **Evolución de la solución:**
 
-Partimos de una versión inicial (`Day7.vs2.cpp`) que implementa **DFS iterativo con pila explícita**:
+Partimos de una versión inicial (`Day7.vs2.cpp` fuera del directorio Entregables) que implementa **DFS iterativo con pila explícita**:
 - Usa `stack<pair<int,int>>` en lugar de recursión.
 - El bucle `while (!pila.empty())` extrae celdas y las procesa.
 - Los vecinos se añaden a la pila con `pila.push()` en lugar de llamadas recursivas.
