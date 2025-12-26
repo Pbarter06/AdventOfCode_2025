@@ -4,32 +4,36 @@
 
 using namespace std;
 
-vector<string> grid;          // Matriz que almacena el mapa
-vector<vector<bool>> dp;      // Tabla para marcar celdas visitadas (memoización)
-int R, C;                     // Dimensiones del grid (filas, columnas)
-long long splits = 0;         // Contador de divisiones ('^')
+vector<string> grid;               // Matriz que almacena el mapa
+vector<vector<long long>> dp;      // Tabla de memoización: dp[r][c] = splits desde (r,c), -1 si no calculado
+int R, C;                          // Dimensiones del grid (filas, columnas)
 
 
 // DFS recursivo con memoización (PD) para explorar el grid
-// Exploramos en profundidad antes de retroceder
-void explore(int r, int c) {
-    // Caso base: fuera de límites o celda ya visitada
-    if (r >= R || c < 0 || c >= C || dp[r][c]) return;
+// Devuelve el número de splits nuevos encontrados desde la celda (r, c)
+// Si la celda ya ha sido visitada, devuelve 0 (los splits ya han sido contados)
+long long explore(int r, int c) {
+    // Caso base: fuera de límites, no hay splits
+    if (r >= R || c < 0 || c >= C) return 0;
 
-    // Marcamos como visitada para evitar sobreconteo de caminos (memoización)
-    dp[r][c] = true;
+    // Memoización: si ya hemos calculado esta celda, devolvemos el valor guardado (0)
+    // Esto evita contar los mismos splits múltiples veces
+    if (dp[r][c] >= 0) return dp[r][c];
+
+    long long resultado;
     
     if (grid[r][c] == '^') {
-        // División: contamos y exploramos ambas ramas (izq y der)
-        splits++;
-        // Llamadas recursivas exploran cada rama hasta el fondo
-        explore(r + 1, c - 1);  // Rama izquierda
-        explore(r + 1, c + 1);  // Rama derecha
+        // División: contamos 1 split + los splits NUEVOS de ambas ramas
+        resultado = 1 + explore(r + 1, c - 1) + explore(r + 1, c + 1);
     } else {
         // Seguimos profundizando en el camino actual
-        explore(r + 1, c);
+        resultado = explore(r + 1, c);
     }
-    // Al terminar las llamadas recursivas, "retrocede" automáticamente
+    
+    // Guardamos el resultado en la tabla de memoización
+    // La próxima vez que lleguemos aquí, devolveremos 0 (ya contados)
+    dp[r][c] = 0;
+    return resultado;
 }
 
 int main() {
@@ -50,13 +54,13 @@ int main() {
     R = grid.size();
     C = grid[0].size();
     
-    // Inicializar tabla de visitados en false
-    dp.assign(R, vector<bool>(C, false));
+    // Inicializar tabla de memoización con -1 (no calculado)
+    dp.assign(R, vector<long long>(C, -1));
 
-    // Iniciar DFS desde la posición inicial
-    explore(startR, startC);
+    // Iniciar DFS desde la posición inicial y obtener el total de splits
+    long long resultado = explore(startR, startC);
 
     // Imprimir total de divisiones encontradas
-    cout << splits << endl;
+    cout << resultado << endl;
     return 0;
 }

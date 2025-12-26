@@ -20,35 +20,47 @@ En este día hemos implementado las siguientes técnicas:
 
 - **DFS (Depth-First Search)**: Búsqueda en profundidad que explora cada rama hasta el fondo antes de retroceder. Se implementa mediante recursión en la función `explore()`, donde cada llamada recursiva representa seguir un rayo hacia abajo o en diagonal.
 
-- **Programación Dinámica (memorización)**: Se utiliza una tabla booleana `dp[r][c]` que almacena si una celda ya ha sido visitada. Esto evita procesar la misma celda múltiples veces cuando varios rayos convergen en el mismo punto, garantizando que cada split se cuente exactamente una vez.
+- **Programación Dinámica (memoización)**: Se utiliza una tabla `dp[r][c]` que controla si una celda ya ha sido procesada. La memoización funciona de la siguiente manera:
+  - Si `dp[r][c] >= 0`, significa que esta celda ya fue visitada y sus splits ya fueron contados. Se devuelve `0` para no contarlos de nuevo.
+  - Si `dp[r][c] == -1`, significa que aún no se ha visitado, por lo que se calcula el resultado, se guarda `0` en la tabla (indicando "ya procesado") y se devuelve el número de splits encontrados.
+  
+  Este esquema sigue el patrón clásico de memoización donde la función **consulta primero la tabla** antes de calcular, similar al ejemplo de los números de Stirling donde `M[n,k]` se consulta al inicio de la función.
 
 ### Cómo se ha abordado la resolución del problema
 La solución modela la cuadrícula como un grafo implícito donde el camino se propaga hacia abajo, dividiéndose en dos al encontrar un separador (`^`).
 
 **Estructuras de datos principales:**
 - `grid`: Vector de strings que almacena el mapa del manifold.
-- `dp`: Matriz booleana de memoización que marca celdas visitadas.
-- `splits`: Contador global de divisiones encontradas.
+- `dp`: Matriz de enteros para memoización. Cada `dp[r][c]` indica si la celda ya fue procesada: `-1` significa "no visitada" y `0` significa "ya visitada".
 
 **Función `explore(r, c)` - DFS recursivo con memoización:**
 
-1. **Caso base (líneas 17-18)**: Si la posición está fuera de límites o la celda ya fue visitada (`dp[r][c] == true`), la recursión termina. Aquí se aplica la **memoización**: consultamos la tabla `dp` para evitar reprocesar celdas.
+La función devuelve el número de splits **nuevos** encontrados desde la celda `(r, c)`:
 
-2. **Marcado de visitado**: Se marca `dp[r][c] = true`. Esta es la **actualización de la tabla de PD** que garantiza que cada celda se procese una sola vez.
+1. **Caso base (línea 17)**: Si la posición está fuera de límites, devuelve 0 (no hay splits fuera del grid).
 
-3. **Lógica de split**: Si encontramos un separador (`^`):
-   - Incrementamos el contador `splits`.
-   - **DFS**: Realizamos dos llamadas recursivas (`explore(r+1, c-1)` y `explore(r+1, c+1)`) que exploran las ramas izquierda y derecha en profundidad.
+2. **Consulta de memoización (líneas 20-22)**: Si `dp[r][c] >= 0`, la celda ya fue visitada y sus splits ya fueron contados. Se devuelve `0` para evitar contarlos de nuevo. Este es el patrón clásico de memoización:
+   ```cpp
+   if (dp[r][c] >= 0) return dp[r][c];
+   ```
 
-4. **Paso normal**: Si es espacio vacío, **DFS** continúa hacia abajo con `explore(r+1, c)`.
+3. **Cálculo del resultado (líneas 24-31)**:
+   - Si encontramos un separador (`^`): `resultado = 1 + explore(izquierda) + explore(derecha)`
+   - Si es espacio vacío: `resultado = explore(abajo)`
 
-5. **Backtracking implícito**: Al terminar las llamadas recursivas, el DFS retrocede automáticamente para explorar otras ramas pendientes.
+4. **Guardado en tabla de memoización (líneas 34-36)**: Antes de devolver, se marca la celda como visitada guardando `0` en `dp[r][c]`:
+   ```cpp
+   dp[r][c] = 0;
+   return resultado;
+   ```
+
+Este esquema es análogo al de los números de Stirling donde primero se consulta `M[n,k]` y se guarda el resultado antes de devolverlo. La diferencia es que aquí guardamos `0` porque queremos indicar "ya procesado" y evitar contar los mismos splits múltiples veces.
 
 **Flujo en `main()`:**
 - Lee el grid y localiza la posición inicial `S`.
-- Inicializa la tabla `dp` con `false` en todas las celdas.
+- Inicializa la tabla `dp` con `-1` en todas las celdas (indica "no visitada").
 - Inicia el DFS desde la posición de `S` llamando a `explore(startR, startC)`.
-- Imprime el total de splits encontrados.
+- El valor devuelto por `explore()` es el total de splits, que se imprime directamente.
 
 ### Alternativas que se han probado y descartado o que se podrían plantear para mejorar la resolución
 
